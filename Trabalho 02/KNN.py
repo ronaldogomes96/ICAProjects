@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from Utils import euclidian_distance
 
 
 class KNN:
@@ -9,19 +10,16 @@ class KNN:
         self.k = k
 
     def train(self, X, y):
-        self.X = X
-        self.y = y
+        self.X = X.values if isinstance(X, pd.DataFrame) else X
+        self.y = y.values if isinstance(y, pd.DataFrame) else y
 
     def predict(self, X):
-        X = X.values
+        X = X.values if isinstance(X, pd.DataFrame) else X
         list_of_distances = []
 
         for index in range(self.X.shape[0]):
             # Euclidean distance calculation
-            square = np.square(self.X - X)
-            sum = np.sum(square.loc[index])
-
-            list_of_distances.append(np.sqrt(sum))
+            list_of_distances.append(euclidian_distance(self.X[index], X))
 
         '''
             argsort returns the indices that sort a NumPy array in ascending order. 
