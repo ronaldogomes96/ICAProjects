@@ -55,3 +55,23 @@ def plot_correlation_iris():
 
     plt.show()
 
+
+def test_knn_with_two_features_iris(k):
+    iris = load_iris()
+    iris_df = pd.DataFrame(data=iris.data, columns=iris.feature_names)[['petal length (cm)', 'petal width (cm)']]
+    knn = KNN(k)
+
+    print('\n\n---------- KNN for IRIS with two features and {} neighbor ------------------\n'.format(k))
+
+    return run_epochs_from(knn, iris_df, iris.target)
+
+
+def test_dmc_with_two_features_iris():
+    iris = load_iris()
+    iris_df = pd.DataFrame(data=iris.data, columns=iris.feature_names)[['petal length (cm)', 'petal width (cm)']]
+    dmc = DMC()
+
+    print('\n\n---------- DMC for IRIS with two features ------------------\n')
+
+    return run_epochs_from(dmc, iris_df, iris.target)
+

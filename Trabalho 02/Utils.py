@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 
 
 def run_epochs_from(model, X, y, epochs=50):
+    X = X.values if isinstance(X, pd.DataFrame) else X
     accuracy_results = []
 
     for epoch in range(epochs):
