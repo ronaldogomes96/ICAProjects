@@ -8,10 +8,7 @@ class DMC:
         self.centroids = None
         self.classes = None
 
-    def train(self, df):
-        X = df.iloc[:, :-1].values
-        y = df.iloc[:, -1].values
-
+    def train(self, X, y):
         self.classes = np.unique(y)
         self.centroids = []
 
@@ -25,7 +22,8 @@ class DMC:
 
         for centroid_index in range(len(self.centroids)):
             # Euclidean distance calculation
-            list_of_distances.append(euclidian_distance(self.centroids[centroid_index], X.values))
+            list_of_distances.append(euclidian_distance(self.centroids[centroid_index],
+                                                        X))
 
         '''
             argmin returns the index of the element that contains the minimum value.
