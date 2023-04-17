@@ -8,10 +8,11 @@ from sklearn.model_selection import train_test_split
 def run_epochs_from(model, X, y, epochs=50):
     X = X.values if isinstance(X, pd.DataFrame) else X
     accuracy_results = []
+    list_of_matrix = []
 
     for epoch in range(epochs):
-        print('\n\nEpoch {}'.format(epoch + 1))
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=None)
+        print('\n\nEpoca {}'.format(epoch + 1))
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None)
 
         model.train(X_train, y_train)
 
@@ -20,14 +21,15 @@ def run_epochs_from(model, X, y, epochs=50):
         for index in range(X_test.shape[0]):
             y_predict_list.append(model.predict(X_test[index]))
 
-        print('\nConfusion matrix')
-        show_confusion_matrix(y_test, y_predict_list)
+        print('\nMatriz de confusão')
+        list_of_matrix.append(show_confusion_matrix(y_test, y_predict_list))
 
         accuracy = accuracy_score(y_test, y_predict_list)
-        print('\nAcurracy: {} %'.format(accuracy * 100))
+        print('\nAcurracia: {} %'.format(accuracy * 100))
+
         accuracy_results.append(accuracy)
 
-    return accuracy_results
+    return accuracy_results, list_of_matrix
 
 
 def euclidian_distance(x, y):
@@ -42,4 +44,6 @@ def show_confusion_matrix(y_test, y_predict_list):
     matrix_display = ConfusionMatrixDisplay(confusion_matrix=matrix)
     matrix_display.plot()
     plt.show()
+
+    return matrix
 
