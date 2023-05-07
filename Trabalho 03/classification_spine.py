@@ -10,30 +10,30 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def run_perceptron_dermatology():
-    X, y = load_database('dermatology')
+def run_perceptron_spine():
+    X, y = load_database('coluna')
 
     perceptron = Perceptron(random_state=None)
-    accuracy_mean_train, std_train, accuracy_mean_test, std_test = run_epochs_from(perceptron, X, y)
+    accuracy_mean_train, std_train, accuracy_mean_test, std_test = run_epochs_from(perceptron, X, y, scaler_name='standart')
 
     return accuracy_mean_train, std_train, accuracy_mean_test, std_test
 
 
-def run_mlp_simple_dermatology():
-    X, y = load_database('dermatology')
+def run_mlp_simple_spine():
+    X, y = load_database('coluna')
 
     mlp = MLPClassifier(hidden_layer_sizes=(2,),
                         activation='logistic',
                         max_iter=30)
-    accuracy_mean_train, std_train, accuracy_mean_test, std_test = run_epochs_from(mlp, X, y)
+    accuracy_mean_train, std_train, accuracy_mean_test, std_test = run_epochs_from(mlp, X, y, scaler_name='standart')
 
     return accuracy_mean_train, std_train, accuracy_mean_test, std_test
 
 
 def run_mlp_for_chose_number_of_neurons():
-    X, y = load_database('dermatology')
+    X, y = load_database('coluna')
 
-    targets = pd.read_csv('{}_target.txt'.format('dermatology'), sep='\t', header=None)
+    targets = pd.read_csv('{}_target.txt'.format('coluna'), sep='\s+', header=None)
 
     # Metodo do valor medio
 
@@ -45,7 +45,7 @@ def run_mlp_for_chose_number_of_neurons():
                                      activation='logistic',
                                      max_iter=1000)
 
-    accuracy_mean_train, std_mean_train, accuracy_mean_test, std_mean_test = run_epochs_from(mlp_neurons_mean, X, y)
+    accuracy_mean_train, std_mean_train, accuracy_mean_test, std_mean_test = run_epochs_from(mlp_neurons_mean, X, y, scaler_name='standart')
 
     # Metodo da raiz quadrada
 
@@ -57,7 +57,7 @@ def run_mlp_for_chose_number_of_neurons():
                                      activation='logistic',
                                      max_iter=1000)
 
-    accuracy_sqtr_train, std_sqtr_train, accuracy_sqrt_test, std_sqtr_test = run_epochs_from(mlp_neurons_sqtr, X, y)
+    accuracy_sqtr_train, std_sqtr_train, accuracy_sqrt_test, std_sqtr_test = run_epochs_from(mlp_neurons_sqtr, X, y, scaler_name='standart')
 
     # KOLMOGOROV
 
@@ -70,7 +70,7 @@ def run_mlp_for_chose_number_of_neurons():
                                            max_iter=1000)
 
     accuracy_kolmogorov_train, std_kolmogorov_train, accuracy_kolmogorov_test, std_kolmogorov_test = run_epochs_from(
-        mlp_neurons_kolmogorov, X, y)
+        mlp_neurons_kolmogorov, X, y, scaler_name='standart')
 
     mean_and_std_features = {
         'Média da acuracia MLP da fase de treinamento': [accuracy_mean_train * 100, accuracy_sqtr_train * 100,
@@ -88,40 +88,54 @@ def run_mlp_for_chose_number_of_neurons():
 
 
 def run_mlp_plot_score_for_epochs(epochs=10000):
-    X, y = load_database('dermatology')
-    targets = pd.read_csv('{}_target.txt'.format('dermatology'), sep='\t', header=None)
+    X, y = load_database('coluna')
+    targets = pd.read_csv('{}_target.txt'.format('coluna'), sep='\s+', header=None)
 
-    scaler = MinMaxScaler()
+    kolmogorov = int(2 * X.shape[1] + 1)
+
+    scaler = StandardScaler()
 
     X = scaler.fit_transform(X)
 
-    sqtr = int(np.sqrt(X.shape[1] * targets.shape[1]))
-
-    mlp = MLPClassifier(hidden_layer_sizes=(sqtr,),
+    mlp = MLPClassifier(hidden_layer_sizes=(kolmogorov,),
                         activation='logistic',
                         max_iter=epochs)
 
     history = mlp.fit(X, y).loss_curve_
 
-    plt.plot(history)
-    plt.title('Gráfico de Erros de Acurácias ao Longo das Épocas')
-    plt.xlabel('Épocas')
-    plt.ylabel('Erro de Acurácia')
+    # Crie uma figura e um eixo personalizados
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Plote a curva de perda (loss) com todas as épocas
+    ax.plot(history, label='train')
+
+    # Defina o título e rótulos dos eixos
+    ax.set_title('Curva de Perda', fontsize=18)
+    ax.set_xlabel('Épocas', fontsize=14)
+    ax.set_ylabel('Perda', fontsize=14)
+
+    # Defina o limite do eixo x para mostrar todas as épocas
+    ax.set_xlim(0, len(history))
+
+    # Defina os valores do eixo x que serão mostrados
+    xticks = [0, len(history) // 4, len(history) // 2, 3 * len(history) // 4, len(history) - 1]
+    ax.set_xticks(xticks)
+
+    # Adicione uma legenda
+    ax.legend()
+
+    # Mostra o gráfico
     plt.show()
 
 
 def run_mlp_optimized():
-    X, y = load_database('dermatology')
-    targets = pd.read_csv('{}_target.txt'.format('dermatology'), sep='\t', header=None)
-    sqtr = int(np.sqrt(X.shape[1] * targets.shape[1]))
+    X, y = load_database('coluna')
+    targets = pd.read_csv('{}_target.txt'.format('coluna'), sep='\t', header=None)
+    kolmogorov = int(2 * X.shape[1] + 1)
 
-    scaler = MinMaxScaler()
-
-    X = scaler.fit_transform(X)
-
-    mlp = MLPClassifier(hidden_layer_sizes=(sqtr,),
+    mlp = MLPClassifier(hidden_layer_sizes=(kolmogorov,),
                         activation='logistic',
-                        max_iter=600)
-    accuracy_mean_train, std_train, accuracy_mean_test, std_test = run_epochs_from(mlp, X, y)
+                        max_iter=1100)
+    accuracy_mean_train, std_train, accuracy_mean_test, std_test = run_epochs_from(mlp, X, y, scaler_name='standart')
 
     return accuracy_mean_train, std_train, accuracy_mean_test, std_test

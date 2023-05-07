@@ -3,13 +3,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import seaborn as sns
 
 
 def load_database(database_name):
-    X = pd.read_csv('{}_input.txt'.format(database_name), sep=' ', header=None, skipinitialspace=True)
-    y = pd.read_csv('{}_target.txt'.format(database_name), sep='\t', header=None)
+    X = pd.read_csv('{}_input.txt'.format(database_name), sep='\s+', header=None, skipinitialspace=True, engine='python')
+    y = pd.read_csv('{}_target.txt'.format(database_name), sep='\s+', header=None)
 
     y = transform_targets(y)
 
@@ -25,10 +25,14 @@ def transform_targets(y):
     return np.array(y_transformed)
 
 
-def run_epochs_from(model, X, y, epochs=50):
+def run_epochs_from(model, X, y, epochs=50, scaler_name='minMax'):
     X = X.values if isinstance(X, pd.DataFrame) else X
 
-    scaler = MinMaxScaler()
+    if scaler_name == 'minMax':
+        scaler = MinMaxScaler()
+    else:
+        scaler = StandardScaler()
+
     X = scaler.fit_transform(X)
 
     accuracy_results_train = []
