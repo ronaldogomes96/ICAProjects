@@ -17,7 +17,7 @@ def load_torneamento_database():
     return X, y
 
 
-def run_classification_epochs_from(model, X, y, epochs=50):
+def run_classification_epochs_from(model, X, y, epochs=50, is_elm=False):
     X = X.values if isinstance(X, pd.DataFrame) else X
 
     scaler = StandardScaler()
@@ -33,6 +33,8 @@ def run_classification_epochs_from(model, X, y, epochs=50):
 
         model.fit(X_train, y_train)
 
+        y_predict_train = []
+        y_predict_list = []
         y_predict_train = np.array(model.predict(X_train))
         y_predict_list = np.array(model.predict(X_test))
 

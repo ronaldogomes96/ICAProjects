@@ -1,3 +1,5 @@
+from sklearn.neural_network import MLPClassifier
+from sklearn.preprocessing import StandardScaler
 from Utils import load_torneamento_database, run_classification_epochs_from, \
     choose_number_of_neurons_for_mlp, plot_score_for_choose_epochs
 from sklearn.linear_model import Perceptron
@@ -9,7 +11,9 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from ELM import ELMClassifier
 
+## MLP
 
 def run_mlp_for_chose_number_of_neurons():
     X, y = load_torneamento_database()
@@ -39,3 +43,15 @@ def run_mlp_torneamento(epochs=5000):
     accuracy_mean_train, std_train, accuracy_mean_test, std_test = run_classification_epochs_from(mlp,
                                                                                                   X, y)
     return accuracy_mean_train, std_train, accuracy_mean_test, std_test
+
+
+def run_elm_torneamento():
+    X, y = load_torneamento_database()
+    elm = ELMClassifier(3)
+
+    accuracy_mean_train, std_train, accuracy_mean_test, std_test = run_classification_epochs_from(elm,
+                                                                                                  X, y, is_elm=True)
+    return accuracy_mean_train, std_train, accuracy_mean_test, std_test
+
+
+run_elm_torneamento()
