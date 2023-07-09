@@ -15,6 +15,7 @@ from ELM import ELMClassifier
 
 ## MLP
 
+
 def run_mlp_for_chose_number_of_neurons():
     X, y = load_torneamento_database()
     results = choose_number_of_neurons_for_mlp(X, y)
@@ -54,4 +55,4 @@ def run_elm_torneamento():
     return accuracy_mean_train, std_train, accuracy_mean_test, std_test
 
 
-run_elm_torneamento()
+run_mlp_torneamento()
